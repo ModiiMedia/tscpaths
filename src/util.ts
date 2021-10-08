@@ -25,6 +25,7 @@ export interface ITSConfig {
 
 export const mapPaths = (
   paths: { [key: string]: string[] },
+  // eslint-disable-next-line no-unused-vars
   mapper: (x: string) => string
 ): { [key: string]: string[] } => {
   const dest = {} as { [key: string]: string[] };
@@ -42,6 +43,7 @@ export const loadConfig = (file: string): ITSConfig => {
       outDir: undefined,
       paths: undefined,
     },
+    // eslint-disable-next-line
   } = require(file) as IRawTSConfig;
 
   const config: ITSConfig = {};
