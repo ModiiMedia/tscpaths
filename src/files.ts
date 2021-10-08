@@ -1,7 +1,7 @@
 /* eslint-disable */
 import fastGlob from 'fast-glob';
 import { readFile, writeFile } from 'fs-extra';
-import { resolve } from 'path';
+import { resolve, relative } from 'path';
 import { ITSConfig } from './config';
 import { replaceBackslashes } from './strings';
 
@@ -37,4 +37,15 @@ export const handleFile = async (file: string, config: ITSConfig) => {
     const text = await readFile(file, 'utf8');
     const newText = replaceAliases(text, config);
     await writeFile(file, newText);
+};
+
+/**
+ *
+ * @param from file path being used as the path base
+ * @param to file that is being imported
+ * @returns
+ */
+export const toRelativePath = (from: string, to: string): string => {
+    const rel = relative(from, to);
+    return (rel.startsWith('.') ? rel : `./${rel}`).replace(/\\/g, '/');
 };

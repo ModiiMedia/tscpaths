@@ -1,5 +1,5 @@
 import { ensureDir, ensureFile, remove } from 'fs-extra';
-import { getFiles } from './files';
+import { getFiles, toRelativePath } from './files';
 import { ITSConfig } from './config';
 
 const rootDir = './.temp/fileTests';
@@ -42,6 +42,30 @@ const config: ITSConfig = {
 test('Get Files', async () => {
     const fileList = await getFiles(rootDir);
     expect(fileList.length).toBe(8);
+});
+
+describe('To Relative Path Conversion', () => {
+    test('Import from subdirectory', () => {
+        const path1 = 'C://Users/johndoe/Documents/my-project/src';
+        const path2 =
+            'C://Users/johndoe/Documents/my-project/src/utilities/strings';
+        const path3 =
+            'C://Users/johndoe/Documents/my-project/src/utilities/auth/models/users';
+        const result1 = toRelativePath(path1, path2);
+        const result2 = toRelativePath(path1, path3);
+        expect(result1).toBe('./utilities/strings');
+        expect(result2).toBe('./utilities/auth/models/users');
+    });
+    test('Import from parent directory', () => {
+        const projectRoot = 'C://Users/johndoe/Documents/my-project';
+        const path1 = `${projectRoot}/src/utilities/auth/models/users`;
+        const path2 = `${projectRoot}/src/utilities/checkout`;
+        const path3 = `${projectRoot}/src/utilities`;
+        const result1 = toRelativePath(path1, path2);
+        const result2 = toRelativePath(path1, path3);
+        expect(result1).toBe('../../../checkout');
+        expect(result2).toBe('../../..');
+    });
 });
 
 // test('Replace Import Statements', () => {

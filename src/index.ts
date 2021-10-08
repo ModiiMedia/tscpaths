@@ -6,7 +6,7 @@ import { existsSync, readFileSync, writeFile } from 'fs-extra';
 import { dirname, relative, resolve } from 'path';
 import { getConfigAliases, loadConfig } from './config';
 import initLogs from './logs';
-import { getFiles } from './files';
+import { getFiles, toRelativePath } from './files';
 
 const program = new Command();
 
@@ -69,11 +69,6 @@ const main = async () => {
     const aliases = getConfigAliases(configDir, config);
     verboseLog(`aliases: ${JSON.stringify(aliases, null, 2)}`);
 
-    const toRelative = (from: string, x: string): string => {
-        const rel = relative(from, x);
-        return (rel.startsWith('.') ? rel : `./${rel}`).replace(/\\/g, '/');
-    };
-
     const exts = ['.js', '.jsx', '.ts', '.tsx', '.d.ts', '.json'];
 
     let replaceCount = 0;
@@ -99,7 +94,7 @@ const main = async () => {
                         existsSync(moduleSrc) ||
                         exts.some((ext) => existsSync(moduleSrc + ext))
                     ) {
-                        const rel = toRelative(dirname(srcFile), moduleSrc);
+                        const rel = toRelativePath(dirname(srcFile), moduleSrc);
                         replaceCount += 1;
                         verboseLog(
                             `\treplacing '${modulePath}' -> '${rel}' referencing ${relative(

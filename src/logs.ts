@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const initLogs = (verbose?: boolean, silent = false) => {
     const verboseLog = (...args: any[]): void => {
         if (verbose && !silent) {
