@@ -5,5 +5,5 @@ const dirs = ['./lib', './cjs', './coverage'];
 
 // eslint-disable-next-line no-restricted-syntax
 for (const dir of dirs) {
-  removeSync(dir);
+    removeSync(dir);
 }

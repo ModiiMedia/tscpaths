@@ -1,4 +1,5 @@
 # tscpaths
+
 Replace absolute paths to relative paths after typescript compilation (tsc) during compile-time.
 
 [![npm version](https://badge.fury.io/js/tscpaths.svg)](https://badge.fury.io/js/tscpaths)
@@ -6,9 +7,11 @@ Replace absolute paths to relative paths after typescript compilation (tsc) duri
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
 
 ## Comparison to [tsconfig-paths](https://github.com/dividab/tsconfig-paths)
+
 \+ Compile time (no runtime dependencies)
 
 ## Getting Started
+
 First, install tscpaths as devDependency using npm or yarn.
 
 ```sh
@@ -18,6 +21,7 @@ yarn add -D tscpaths
 ```
 
 ## Add it to your build scripts in package.json
+
 ```json
 "scripts": {
   "build": "tsc --project tsconfig.json && tscpaths -p tsconfig.json -s ./src -o ./out",
@@ -25,6 +29,7 @@ yarn add -D tscpaths
 ```
 
 ### Options
+
 | flag         | description                                        |
 | ------------ | -------------------------------------------------- |
 | -p --project | project configuration file (tsconfig.json)         |
@@ -41,8 +46,8 @@ For now, it's simpler to provide the paths manually.
 
 If you know how, Pull Requests are welcome!
 
-
 # Disclaimer !!!!!
+
 This is not a mature project yet.
 
 It works for my setup so far.
