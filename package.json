@@ -9,9 +9,8 @@
     "tscpaths": "cjs/index.js"
   },
   "scripts": {
-    "build": "npm run build:esm && npm run build:cjs",
-    "build:esm": "tsc -p ./tsconfig.esm.json",
-    "build:cjs": "tsc -p ./tsconfig.cjs.json",
+    "prepublish": "npm start",
+    "build": "tsc",
     "clear": "node clear",
     "format": "prettier --write \"./*.{js,jsx,ts,tsx}\" \"./src/**/*.{js,jsx,ts,tsx}\"",
     "lint": "eslint \"src/**/*\"",
