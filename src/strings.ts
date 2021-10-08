@@ -1,3 +1,4 @@
-export const replaceBackslashes = (input: string, replaceWith: string) => {
-  return input.replace(/\\/g, replaceWith);
-};
+export const replaceBackslashes = (input: string, replaceWith: string) =>
+  input.replace(/\\/g, replaceWith);
+
+export const a = 'a';

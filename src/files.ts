@@ -1,3 +1,4 @@
+/* eslint-disable */
 import fastGlob from 'fast-glob';
 import { readFile, writeFile } from 'fs-extra';
 import { resolve } from 'path';

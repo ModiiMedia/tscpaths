@@ -1,5 +1,5 @@
 #! /usr/bin/env node
-
+/* eslint-disable */
 /* eslint-disable no-console */
 import { Command } from 'commander';
 import { existsSync, readFileSync, writeFileSync } from 'fs-extra';

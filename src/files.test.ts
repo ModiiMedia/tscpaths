@@ -1,8 +1,6 @@
-import { resolve } from 'path';
 import { ensureDir, ensureFile, remove } from 'fs-extra';
 import getFiles from './files';
 import { ITSConfig } from './config';
-import { replaceBackslashes } from './strings';
 
 const rootDir = './.temp/fileTests';
 const files = [
@@ -24,12 +22,14 @@ beforeAll(async () => {
   await ensureDir(`${rootDir}/out`);
 
   const tasks: Promise<unknown>[] = [];
+  // eslint-disable-next-line no-restricted-syntax
   for (const file of files) {
     tasks.push(ensureFile(`${rootDir}/${file}`));
   }
   await Promise.all(tasks);
 });
 
+// eslint-disable-next-line no-unused-vars
 const config: ITSConfig = {
   outDir: './temp/fileTests/out',
   baseUrl: './temp/fileTests',
@@ -40,8 +40,8 @@ const config: ITSConfig = {
 };
 
 test('Get Files', async () => {
-  const files = await getFiles(rootDir);
-  expect(files.length).toBe(8);
+  const fileList = await getFiles(rootDir);
+  expect(fileList.length).toBe(8);
 });
 
 // test('Replace Import Statements', () => {

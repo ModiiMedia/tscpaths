@@ -2,7 +2,6 @@ module.exports = {
   env: {
     es2021: true,
     node: true,
-    'jest/globals': true,
   },
   extends: ['airbnb-base', 'prettier'],
   parser: '@typescript-eslint/parser',
@@ -15,4 +14,12 @@ module.exports = {
     'import/extensions': 0,
     'import/no-unresolved': 0,
   },
+  overrides: [
+    {
+      files: ['**/*.test.ts', '**/*.spec.ts', '**/*.test.js', '**/*.spec.js'],
+      env: {
+        jest: true,
+      },
+    },
+  ],
 };
