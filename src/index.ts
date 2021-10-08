@@ -1,11 +1,13 @@
 #! /usr/bin/env node
 
 /* eslint-disable no-console */
-import { program } from 'commander';
+import { Command } from 'commander';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import fastGlob from 'fast-glob';
 import { dirname, relative, resolve } from 'path';
 import { loadConfig } from './util';
+
+const program = new Command();
 
 program
   .version('0.0.1')
@@ -22,7 +24,7 @@ program.on('--help', () => {
 
 program.parse(process.argv);
 
-const { project, src, out, verbose } = program as {
+const { project, src, out, verbose } = program.opts() as {
   project?: string;
   src?: string;
   out?: string;
