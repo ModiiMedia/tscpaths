@@ -1,6 +1,6 @@
 {
   "name": "@modii/tscpaths",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Replace absolute paths to relative paths after typescript compilation",
   "main": "lib/index.js",
   "module": "lib/index.js",
