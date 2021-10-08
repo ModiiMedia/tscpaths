@@ -2,11 +2,10 @@
   "name": "@modii/tscpaths",
   "version": "0.1.0",
   "description": "Replace absolute paths to relative paths after typescript compilation",
-  "main": "cjs/index.js",
-  "module": "lib/index.js",
+  "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "bin": {
-    "tscpaths": "cjs/index.js"
+    "tscpaths": "lib/index.js"
   },
   "scripts": {
     "prepublish": "npm start",
