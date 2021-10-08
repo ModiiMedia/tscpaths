@@ -1,4 +1,5 @@
 import { dirname, resolve } from 'path';
+import { load } from 'tsconfig';
 
 /*
 "baseUrl": ".",
@@ -35,30 +36,20 @@ export const mapPaths = (
   return dest;
 };
 
-export const loadConfig = (file: string): ITSConfig => {
-  const {
-    extends: ext,
-    compilerOptions: { baseUrl, outDir, paths } = {
-      baseUrl: undefined,
-      outDir: undefined,
-      paths: undefined,
-    },
-    // eslint-disable-next-line
-  } = require(file) as IRawTSConfig;
+export const loadConfig = async (file: string): Promise<ITSConfig> => {
+  const configFile = await load(file);
+  const configParams = configFile.config;
+  console.log(configParams);
+  const config: ITSConfig = {
+    baseUrl: configParams?.compilerOptions?.baseUrl,
+    outDir: configParams?.compilerOptions?.outDir,
+    paths: configParams?.compilerOptions?.paths,
+  };
 
-  const config: ITSConfig = {};
-  if (baseUrl) {
-    config.baseUrl = baseUrl;
-  }
-  if (outDir) {
-    config.outDir = outDir;
-  }
-  if (paths) {
-    config.paths = paths;
-  }
-
-  if (ext) {
-    const parentConfig = loadConfig(resolve(dirname(file), ext));
+  if (configParams?.extends) {
+    const parentConfig = loadConfig(
+      resolve(dirname(file), configParams.extends as string)
+    );
     return {
       ...parentConfig,
       ...config,

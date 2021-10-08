@@ -58,6 +58,7 @@
   "dependencies": {
     "commander": "^8.2.0",
     "fast-glob": "^3.2.7",
-    "globby": "^12.0.2"
+    "globby": "^12.0.2",
+    "tsconfig": "^7.0.0"
   }
 }
