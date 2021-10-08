@@ -3,7 +3,7 @@
 /* eslint-disable no-console */
 import { program } from 'commander';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
-import { globbySync } from 'globby';
+import fastGlob from 'fast-glob';
 import { dirname, relative, resolve } from 'path';
 import { loadConfig } from './util';
 
@@ -159,10 +159,12 @@ const replaceAlias = (text: string, outFile: string): string =>
     );
 
 // import relative to absolute path
-const files = globbySync(`${outPath}/**/*.{js,jsx,ts,tsx}`, {
-  dot: true,
-  noDir: true,
-} as any).map((x) => resolve(x.path));
+const files = fastGlob
+  .sync(`${outPath}/**/*.{js,jsx,ts,tsx}`, {
+    dot: true,
+    noDir: true,
+  } as any)
+  .map((x) => resolve(x.path));
 
 let changedFileCount = 0;
 
