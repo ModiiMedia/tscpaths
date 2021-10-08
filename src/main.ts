@@ -32,7 +32,7 @@ const { project, src, out, verbose } = program.opts() as {
     verbose?: boolean;
 };
 
-const verboseLog = initLogs(verbose);
+const { verboseLog, log } = initLogs(verbose);
 
 if (!project) {
     throw new Error('--project must be specified');
@@ -49,9 +49,7 @@ const main = async () => {
     const config = await loadConfig(configPath);
     const srcRoot = resolve(src);
     const outRoot = resolve(out);
-    console.log(
-        `tscpaths --project ${configPath} --src ${srcRoot} --out ${outRoot}`
-    );
+    log(`tscpaths --project ${configPath} --src ${srcRoot} --out ${outRoot}`);
 
     const { baseUrl, outDir, paths } = config;
     verboseLog(`baseUrl: ${baseUrl}`);

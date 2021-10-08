@@ -15,7 +15,8 @@ program
     .option('-p, --project <file>', 'path to tsconfig.json')
     .option('-s, --src <path>', 'source root path')
     .option('-o, --out <path>', 'output root path')
-    .option('-v, --verbose', 'output logs');
+    .option('-v, --verbose', 'output logs')
+    .option('-q, --quiet', 'prevent logs from outputting');
 
 program.on('--help', () => {
     console.log(`
@@ -25,14 +26,15 @@ program.on('--help', () => {
 
 program.parse(process.argv);
 
-const { project, src, out, verbose } = program.opts() as {
+const { project, src, out, verbose, quiet } = program.opts() as {
     project?: string;
     src?: string;
     out?: string;
     verbose?: boolean;
+    quiet?: boolean;
 };
 
-const verboseLog = initLogs(verbose);
+const { verboseLog, log } = initLogs(verbose, quiet);
 
 if (!project) {
     throw new Error('--project must be specified');
@@ -46,9 +48,7 @@ const main = async () => {
     const srcRoot = resolve(src);
     const outRoot = out && resolve(out);
 
-    console.log(
-        `tscpaths --project ${configFile} --src ${srcRoot} --out ${outRoot}`
-    );
+    log(`tscpaths --project ${configFile} --src ${srcRoot} --out ${outRoot}`);
 
     const config = await loadConfig(configFile);
     const { baseUrl, outDir, paths } = config;
@@ -110,7 +110,7 @@ const main = async () => {
                         return rel;
                     }
                 }
-                console.log(`could not replace ${modulePath}`);
+                log(`could not replace ${modulePath}`);
             }
         }
         return modulePath;
@@ -142,7 +142,7 @@ const main = async () => {
             );
 
     // import relative to absolute path
-    console.log(outPath);
+    log(outPath);
     const files = await getFiles(outPath);
 
     let changedFileCount = 0;
@@ -156,15 +156,13 @@ const main = async () => {
         const newText = replaceAlias(text, file);
         if (text !== newText) {
             changedFileCount += 1;
-            console.log(
-                `${file}: replaced ${replaceCount - prevReplaceCount} paths`
-            );
+            log(`${file}: replaced ${replaceCount - prevReplaceCount} paths`);
             writeTasks.push(writeFile(file, newText, 'utf8'));
         }
     }
     await Promise.all(writeTasks);
 
-    console.log(`Replaced ${replaceCount} paths in ${changedFileCount} files`);
+    log(`Replaced ${replaceCount} paths in ${changedFileCount} files`);
 };
 
 main();
