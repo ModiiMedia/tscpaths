@@ -53,8 +53,6 @@ const main = async () => {
         `tscpaths --project ${configPath} --src ${srcRoot} --out ${outRoot}`
     );
 
-    validateConfig(config);
-
     const { baseUrl, outDir, paths } = config;
     verboseLog(`baseUrl: ${baseUrl}`);
     verboseLog(`outDir: ${outDir}`);

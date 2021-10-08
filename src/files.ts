@@ -5,7 +5,7 @@ import { resolve } from 'path';
 import { ITSConfig } from './config';
 import { replaceBackslashes } from './strings';
 
-const getFiles = async (dir: string) => {
+export const getFiles = async (dir: string) => {
     const globStr = replaceBackslashes(
         `${resolve(dir)}/**/*.{js,jsx,ts,tsx}`,
         '/'
@@ -38,5 +38,3 @@ export const handleFile = async (file: string, config: ITSConfig) => {
     const newText = replaceAliases(text, config);
     await writeFile(file, newText);
 };
-
-export default getFiles;

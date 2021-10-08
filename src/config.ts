@@ -74,7 +74,15 @@ export const loadConfig = async (file: string): Promise<ITSConfig> => {
     return validateConfig(config);
 };
 
-export const getConfigAliases = (configDir: string, config: ITSConfig) => {
+export interface ConfigAlias {
+    prefix: string;
+    aliasPaths: string[];
+}
+
+export const getConfigAliases = (
+    configDir: string,
+    config: ITSConfig
+): ConfigAlias[] => {
     const { paths, baseUrl } = config;
     const basePath = resolve(configDir, baseUrl);
     return Object.keys(paths)

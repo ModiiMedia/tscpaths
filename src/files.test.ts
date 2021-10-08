@@ -1,5 +1,5 @@
 import { ensureDir, ensureFile, remove } from 'fs-extra';
-import getFiles from './files';
+import { getFiles } from './files';
 import { ITSConfig } from './config';
 
 const rootDir = './.temp/fileTests';

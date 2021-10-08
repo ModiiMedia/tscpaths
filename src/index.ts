@@ -2,12 +2,11 @@
 
 /* eslint-disable no-console */
 import { Command } from 'commander';
-import { existsSync, readFileSync, writeFileSync } from 'fs-extra';
-import fastGlob from 'fast-glob';
+import { existsSync, readFileSync, writeFile } from 'fs-extra';
 import { dirname, relative, resolve } from 'path';
-import { loadConfig } from './config';
+import { getConfigAliases, loadConfig } from './config';
 import initLogs from './logs';
-import { replaceBackslashes } from './strings';
+import { getFiles } from './files';
 
 const program = new Command();
 
@@ -51,17 +50,8 @@ const main = async () => {
         `tscpaths --project ${configFile} --src ${srcRoot} --out ${outRoot}`
     );
 
-    const { baseUrl, outDir, paths } = await loadConfig(configFile);
-
-    if (!baseUrl) {
-        throw new Error('compilerOptions.baseUrl is not set');
-    }
-    if (!paths) {
-        throw new Error('compilerOptions.paths is not set');
-    }
-    if (!outDir) {
-        throw new Error('compilerOptions.outDir is not set');
-    }
+    const config = await loadConfig(configFile);
+    const { baseUrl, outDir, paths } = config;
     verboseLog(`baseUrl: ${baseUrl}`);
     verboseLog(`outDir: ${outDir}`);
     verboseLog(`paths: ${JSON.stringify(paths, null, 2)}`);
@@ -76,14 +66,7 @@ const main = async () => {
     const outFileToSrcFile = (x: string): string =>
         resolve(srcRoot, relative(outPath, x));
 
-    const aliases = Object.keys(paths)
-        .map((alias) => ({
-            prefix: alias.replace(/\*$/, ''),
-            aliasPaths: paths[alias as keyof typeof paths].map((p) =>
-                resolve(basePath, p.replace(/\*$/, ''))
-            ),
-        }))
-        .filter(({ prefix }) => prefix);
+    const aliases = getConfigAliases(configDir, config);
     verboseLog(`aliases: ${JSON.stringify(aliases, null, 2)}`);
 
     const toRelative = (from: string, x: string): string => {
@@ -160,17 +143,12 @@ const main = async () => {
 
     // import relative to absolute path
     console.log(outPath);
-    const files = await fastGlob(
-        `${replaceBackslashes(outPath, '/')}/**/*.{js,jsx,ts,tsx}`,
-        {
-            dot: true,
-            onlyFiles: true,
-        }
-    );
+    const files = await getFiles(outPath);
 
     let changedFileCount = 0;
 
     const flen = files.length;
+    const writeTasks: Promise<unknown>[] = [];
     for (let i = 0; i < flen; i += 1) {
         const file = files[i];
         const text = readFileSync(file, 'utf8');
@@ -181,9 +159,10 @@ const main = async () => {
             console.log(
                 `${file}: replaced ${replaceCount - prevReplaceCount} paths`
             );
-            writeFileSync(file, newText, 'utf8');
+            writeTasks.push(writeFile(file, newText, 'utf8'));
         }
     }
+    await Promise.all(writeTasks);
 
     console.log(`Replaced ${replaceCount} paths in ${changedFileCount} files`);
 };
