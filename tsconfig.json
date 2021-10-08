@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
+    "baseUrl": ".",
     "allowJs": false /* Allow javascript files to be compiled. */,
     // "checkJs": true,                             /* Report errors in .js files. */
     // "jsx": "preserve",                           /* Specify JSX code generation: 'preserve', 'react-native', 'react', 'react-jsx' or 'react-jsxdev'. */
@@ -62,6 +63,9 @@
 
     /* Advanced Options */
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@blarg/*": ["./src/blarg/*"]
+    }
   }
 }

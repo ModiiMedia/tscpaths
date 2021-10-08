@@ -81,3 +81,5 @@ lib
 
 # next.js build output
 .next
+
+.temp

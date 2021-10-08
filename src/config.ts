@@ -19,10 +19,12 @@ export interface IRawTSConfig {
 }
 
 export interface ITSConfig {
-  baseUrl?: string;
-  outDir?: string;
-  paths?: { [key: string]: string[] };
+  baseUrl: string;
+  outDir: string;
+  paths: { [key: string]: string[] };
 }
+
+export type PartialITSConfig = Partial<ITSConfig>;
 
 export const mapPaths = (
   paths: { [key: string]: string[] },
@@ -36,11 +38,25 @@ export const mapPaths = (
   return dest;
 };
 
+export const validateConfig = (config: PartialITSConfig): ITSConfig => {
+  const { baseUrl, outDir, paths } = config;
+
+  if (!baseUrl) {
+    throw new Error('compilerOptions.baseUrl is not set');
+  }
+  if (!paths) {
+    throw new Error('compilerOptions.paths is not set');
+  }
+  if (!outDir) {
+    throw new Error('compilerOptions.outDir is not set');
+  }
+  return config as ITSConfig;
+};
+
 export const loadConfig = async (file: string): Promise<ITSConfig> => {
   const configFile = await load(file);
-  const configParams = configFile.config;
-  console.log(configParams);
-  const config: ITSConfig = {
+  const configParams = configFile.config as IRawTSConfig;
+  let config: PartialITSConfig = {
     baseUrl: configParams?.compilerOptions?.baseUrl,
     outDir: configParams?.compilerOptions?.outDir,
     paths: configParams?.compilerOptions?.paths,
@@ -50,11 +66,23 @@ export const loadConfig = async (file: string): Promise<ITSConfig> => {
     const parentConfig = loadConfig(
       resolve(dirname(file), configParams.extends as string)
     );
-    return {
+    config = {
       ...parentConfig,
       ...config,
     };
   }
+  return validateConfig(config);
+};
 
-  return config;
+export const getConfigAliases = (configDir: string, config: ITSConfig) => {
+  const { paths, baseUrl } = config;
+  const basePath = resolve(configDir, baseUrl);
+  return Object.keys(paths)
+    .map((alias) => ({
+      prefix: alias.replace(/\*$/, ''),
+      aliasPaths: paths[alias as keyof typeof paths].map((p) =>
+        resolve(basePath, p.replace(/\*$/, ''))
+      ),
+    }))
+    .filter(({ prefix }) => prefix);
 };

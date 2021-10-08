@@ -2,10 +2,12 @@
 
 /* eslint-disable no-console */
 import { Command } from 'commander';
-import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { existsSync, readFileSync, writeFileSync } from 'fs-extra';
 import fastGlob from 'fast-glob';
 import { dirname, relative, resolve } from 'path';
-import { loadConfig } from './util';
+import { loadConfig } from './config';
+import initLogs from './logs';
+import { replaceBackslashes } from './strings';
 
 const program = new Command();
 
@@ -31,6 +33,8 @@ const { project, src, out, verbose } = program.opts() as {
   verbose?: boolean;
 };
 
+const verboseLog = initLogs(verbose);
+
 if (!project) {
   throw new Error('--project must be specified');
 }
@@ -38,17 +42,9 @@ if (!src) {
   throw new Error('--src must be specified');
 }
 
-const verboseLog = (...args: any[]): void => {
-  if (verbose) {
-    console.log(...args);
-  }
-};
-
 const main = async () => {
-  const configFile = resolve(process.cwd(), project);
-
+  const configFile = resolve(project);
   const srcRoot = resolve(src);
-
   const outRoot = out && resolve(out);
 
   console.log(
@@ -77,7 +73,6 @@ const main = async () => {
 
   const outPath = outRoot || resolve(basePath, outDir);
   verboseLog(`outPath: ${outPath}`);
-
   const outFileToSrcFile = (x: string): string =>
     resolve(srcRoot, relative(outPath, x));
 
@@ -162,15 +157,14 @@ const main = async () => {
       );
 
   // import relative to absolute path
-  const files = fastGlob
-    .sync(`${outPath}/**/*.{js,jsx,ts,tsx}`, {
+  console.log(outPath);
+  const files = await fastGlob(
+    `${replaceBackslashes(outPath, '/')}/**/*.{js,jsx,ts,tsx}`,
+    {
       dot: true,
-      noDir: true,
-    } as any)
-    .map((x) => {
-      console.log(x);
-      return x.path;
-    });
+      onlyFiles: true,
+    }
+  );
 
   let changedFileCount = 0;
 
