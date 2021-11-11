@@ -15,9 +15,9 @@ Replace absolute paths to relative paths after typescript compilation (tsc) duri
 First, install tscpaths as devDependency using npm or yarn.
 
 ```sh
-npm install --save-dev tscpaths
+npm install --save-dev @modii/tscpaths
 # or
-yarn add -D tscpaths
+yarn add -D @modii/tscpaths
 ```
 
 ## Add it to your build scripts in package.json
