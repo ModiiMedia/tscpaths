@@ -60,6 +60,8 @@ const main = async () => {
     verboseLog(`aliases: ${JSON.stringify(aliases, null, 2)}`);
 
     const extensions = ['.js', '.jsx', '.ts', '.tsx', '.d.ts', '.json'];
+
+    let replaceCount = 0;
 };
 
 main();
